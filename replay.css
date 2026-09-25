@@ -1,0 +1,94 @@
+/* ===== レースリプレイ ===== */
+.rp { --rp-track: #3A424B; --rp-kerb: #5B6571; --rp-map: #15191D; display: grid; gap: 16px; }
+.rp-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.rp-f { display: grid; gap: 4px; font-size: 12px; color: var(--muted); grid-template-columns: auto 1fr; align-items: center; column-gap: 6px; }
+.rp-f > span:not(.rp-dot) { grid-column: 1 / -1; }
+.rp-f .rp-dot + span { grid-column: 2; }
+.rp-f select { grid-column: 1 / -1; width: 100%; background: var(--tarmac); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 14px; color: var(--paper); }
+.rp-dot { width: 10px; height: 10px; border-radius: 2px; background: var(--muted); }
+.rp-dot-b { box-shadow: inset 0 0 0 2px var(--paper); }
+.rp-main { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1000px) { .rp-main { grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr); align-items: start; } }
+.rp-mapbox { background: var(--rp-map); border-radius: 16px; padding: 10px; position: relative; }
+.rp-mapbox canvas { display: block; width: 100%; }
+.rp-loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); text-align: center; padding: 20px; }
+.rp-loading[hidden] { display: none; }
+.rp-flag { position: absolute; top: 12px; left: 12px; right: 12px; z-index: 2; font: 700 13px/1.3 var(--num); letter-spacing: .02em; padding: 6px 10px; border-radius: 6px; background: #3B444D; color: #fff; width: fit-content; max-width: calc(100% - 24px); }
+.rp-flag.y { background: var(--yellow); color: #111; } .rp-flag.r { background: var(--red); } .rp-flag.g { background: #1E9E57; } .rp-flag.c { background: #fff; color: #111; }
+.rp-ctrl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 10px 4px 2px; color: #EEF1F3; }
+.rp-play { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--red); color: #fff; font-size: 16px; cursor: pointer; flex: none; }
+.rp-time { display: flex; flex-direction: column; line-height: 1.15; font-family: var(--num); min-width: 86px; }
+.rp-time b { font-size: 18px; } .rp-time span { font-size: 13px; color: #9CA6B0; font-variant-numeric: tabular-nums; }
+.rp-ctrl input[type=range] { flex: 1 1 180px; accent-color: var(--red); }
+.rp-speeds { display: flex; gap: 4px; }
+.rp-speeds button { background: none; border: 1px solid #3B444D; color: #C9D0D6; border-radius: 6px; padding: 3px 8px; font: 700 13px var(--num); cursor: pointer; }
+.rp-speeds button[aria-pressed="true"] { background: #EEF1F3; color: #15191D; border-color: #EEF1F3; }
+.rp-all { font-size: 13px; color: #C9D0D6; display: flex; gap: 6px; align-items: center; }
+.rp-side { display: grid; gap: 12px; }
+.rp-gap { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; background: var(--tarmac); border-radius: 14px; padding: 10px 14px; min-height: 58px; }
+.rp-gapw { font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.rp-gapw:last-child { justify-content: flex-end; }
+.rp-gapw i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+.rp-gapv { font: 800 30px/1 var(--num); text-align: center; font-variant-numeric: tabular-nums; }
+.rp-gapv small { font-size: 14px; margin-left: 2px; color: var(--muted); }
+.rp-wheels { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (min-width: 1000px) { .rp-wheels { grid-template-columns: 1fr; } }
+
+/* ステアリングホイールのディスプレイ */
+.wheel { --team: #9CA6B0; background: #0E1114; color: #EEF1F3; border-radius: 18px 18px 26px 26px; padding: 10px 12px 12px; box-shadow: inset 0 0 0 1px #2A3138; position: relative; }
+.wh-top { display: flex; align-items: center; gap: 6px; font-size: 12px; min-width: 0; }
+.wh-bar { width: 4px; height: 16px; border-radius: 2px; background: var(--team); flex: none; }
+.wheel.second .wh-bar { background: linear-gradient(90deg, var(--team) 0 35%, #fff 35% 65%, var(--team) 65%); }
+.wh-code { font: 800 17px/1 var(--num); letter-spacing: .03em; }
+.wh-name { color: #9CA6B0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; flex: 1; min-width: 0; }
+.wh-pos { font: 800 17px/1 var(--num); color: var(--team); }
+.wh-leds { display: grid; grid-template-columns: repeat(15, 1fr); gap: 3px; margin: 9px 0 6px; }
+.wh-leds i { aspect-ratio: 1; border-radius: 50%; background: #1E2328; }
+.wh-leds i.g.on { background: #2BE36A; box-shadow: 0 0 6px #2BE36A; }
+.wh-leds i.r.on { background: #FF2A2A; box-shadow: 0 0 6px #FF2A2A; }
+.wh-leds i.b.on { background: #7A6BFF; box-shadow: 0 0 6px #7A6BFF; }
+.wh-mid { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 6px; }
+.wh-spd, .wh-rpm { display: flex; flex-direction: column; line-height: 1; }
+.wh-rpm { text-align: right; }
+.wh-spd b, .wh-rpm b { font: 800 clamp(20px, 5.4vw, 28px)/1 var(--num); font-variant-numeric: tabular-nums; }
+.wh-rpm b { font-size: clamp(15px, 4vw, 19px); color: #C9D0D6; }
+.wh-spd span, .wh-rpm span { font-size: 11px; color: #7C8792; margin-top: 3px; }
+.wh-gear { font: 800 clamp(40px, 11vw, 56px)/0.9 var(--num); color: var(--team); min-width: 1ch; text-align: center; background: #161B20; border-radius: 10px; padding: 4px 12px; }
+.wh-low { display: grid; grid-template-columns: 1fr 58px; gap: 10px; align-items: center; margin-top: 10px; }
+.wh-ped { display: grid; grid-template-columns: auto 1fr; gap: 5px 8px; align-items: center; font-size: 11px; color: #7C8792; }
+.wh-trk { height: 8px; background: #1E2328; border-radius: 4px; overflow: hidden; }
+.wh-trk i { display: block; height: 100%; transform-origin: left; transform: scaleX(0); transition: transform .08s linear; }
+.wh-thr { background: #2BE36A; } .wh-brk { background: #FF2A2A; }
+.wh-g { width: 58px; height: 58px; }
+.wh-g circle, .wh-g line { fill: none; stroke: #2A3138; stroke-width: 1.2; }
+.wh-g .wh-gdot { fill: var(--team); stroke: #0E1114; stroke-width: 1.5; }
+.wh-info { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 8px; font-size: 12px; color: #C9D0D6; }
+.wh-tyre { display: inline-flex; align-items: center; gap: 5px; }
+.wh-tyre i { width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--c); display: inline-grid; place-items: center; font: 800 10px var(--num); font-style: normal; color: #EEF1F3; }
+.wh-wing { padding: 1px 7px; border-radius: 4px; background: #1E2328; color: #5F6A75; font-size: 11px; }
+.wh-wing.on { background: #2BE36A; color: #0E1114; font-weight: 700; }
+.wh-lt { margin-left: auto; font-family: var(--num); font-size: 13px; color: #9CA6B0; }
+.wh-note { margin: 6px 0 0; font-size: 11px; color: var(--yellow); }
+@media (max-width: 520px) { .wh-low { grid-template-columns: 1fr; } .wh-g { display: none; } .wh-name { display: none; } }
+
+.rp-lower { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1000px) { .rp-lower { grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr); align-items: start; } }
+.rp-card { background: var(--tarmac); border-radius: 16px; padding: 14px 16px; }
+.rp-card h3 { font-size: 14px; color: var(--muted); font-weight: 700; margin: 0 0 8px; }
+.rp-svg { width: 100%; height: auto; display: block; cursor: pointer; }
+.rp-svg .lbl { fill: var(--paper); font: 800 16px var(--num); }
+.rp-svg .in { fill: #111; font: 800 14px var(--num); }
+.rp-svg .tk { fill: var(--muted); font: 500 13px var(--num); text-anchor: middle; }
+.rp-svg .yl { fill: var(--muted); font: 500 13px var(--num); }
+.rp-svg .cur { stroke: var(--paper); stroke-width: 1.5; stroke-dasharray: 3 3; }
+.rp-tower { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; column-gap: 14px; font-family: var(--num); }
+@media (min-width: 1000px) { .rp-tower { grid-template-columns: 1fr; } }
+.rp-tower li { display: grid; grid-template-columns: 22px 4px 1fr auto 18px; align-items: center; gap: 7px; padding: 3px 4px; border-radius: 4px; font-size: 14px; }
+.rp-tower .p { text-align: right; font-weight: 700; color: var(--muted); }
+.rp-tower .tb { height: 14px; border-radius: 1px; }
+.rp-tower .g { font-size: 12px; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+.rp-tower .ty { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid var(--c); font-size: 9px; font-weight: 800; display: grid; place-items: center; }
+.rp-tower li.fa, .rp-tower li.fb { background: var(--kerb); }
+.rp-tower li.ret { opacity: .45; }
+.rp-credit { font-size: 12px; color: var(--muted); margin: 0; }
+.rp-credit a { color: inherit; }

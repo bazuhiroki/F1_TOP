@@ -1,0 +1,18 @@
+name: Notion Sync (Jolpica → Notion)
+on:
+  schedule:
+    - cron: "0 22 * * *"        # 毎日 07:00 JST
+    - cron: "30 */2 * * 6,0,1"  # 土・日・月は2時間おき（レース直後に反映）
+  workflow_dispatch: {}
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python sync/sync_f1.py
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}

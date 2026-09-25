@@ -1,0 +1,4 @@
+# Cloudflare Pages 設定（ビルド不要の静的サイト + functions/ のサーバー関数）
+name = "f1-top"
+pages_build_output_dir = "web"
+compatibility_date = "2025-09-01"

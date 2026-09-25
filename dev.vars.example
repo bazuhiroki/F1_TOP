@@ -1,0 +1,3 @@
+# ローカル確認用（npx wrangler pages dev）。.dev.vars にコピーして使う。※コミットしない
+NOTION_TOKEN=ntn_xxxxxxxxxxxxxxxx
+APP_KEY=好きな合言葉
